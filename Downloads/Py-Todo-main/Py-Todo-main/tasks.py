@@ -59,3 +59,28 @@ def mark_done(index):
 
 def clear_all():
     save_tasks([])
+
+
+def mark_task_done_by_id(task_id):
+    """Mark a task as done by its ID. Returns True if found and updated."""
+    tasks = load_tasks()
+    found = False
+    for task in tasks:
+        if task.get('id') == task_id:
+            task['done'] = True
+            found = True
+            break
+    if found:
+        save_tasks(tasks)
+    return found
+
+
+def delete_task_by_id(task_id):
+    """Delete a task by its ID. Returns True if found and deleted."""
+    tasks = load_tasks()
+    initial_count = len(tasks)
+    tasks_after_deletion = [t for t in tasks if t.get('id') != task_id]
+    deleted = len(tasks_after_deletion) < initial_count
+    if deleted:
+        save_tasks(tasks_after_deletion)
+    return deleted

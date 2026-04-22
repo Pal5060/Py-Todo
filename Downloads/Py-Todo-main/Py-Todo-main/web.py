@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime
 import uuid
-from tasks import load_tasks, save_tasks
+from tasks import load_tasks, save_tasks, mark_task_done_by_id, delete_task_by_id
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -63,15 +63,7 @@ def add():
 
 @app.route('/done/<task_id>', methods=['POST'])
 def done(task_id):
-    tasks = load_tasks()
-    found = False
-    for t in tasks:
-        if t.get('id') == task_id:
-            t['done'] = True
-            found = True
-            break
-    if found:
-        save_tasks(tasks)
+    found = mark_task_done_by_id(task_id)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({'ok': found})
     return redirect(url_for('index'))
@@ -79,11 +71,7 @@ def done(task_id):
 
 @app.route('/delete/<task_id>', methods=['POST'])
 def delete(task_id):
-    tasks = load_tasks()
-    new = [t for t in tasks if t.get('id') != task_id]
-    deleted = len(new) != len(tasks)
-    if deleted:
-        save_tasks(new)
+    deleted = delete_task_by_id(task_id)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({'ok': deleted})
     return redirect(url_for('index'))
