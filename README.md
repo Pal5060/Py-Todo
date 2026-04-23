@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Hi there, I'm [Your Name/GitHub Username] 👋
 
 I'm a passionate [Your Role/Interest, e.g., software developer, data scientist, student] with a keen interest in [mention a few key areas, e.g., web development, machine learning, open source].
@@ -30,3 +31,6 @@ Here are some projects I'm proud of:
 ---
 
 Feel free to explore my repositories and connect with me!
+=======
+"# mlops-fraud-detection" 
+>>>>>>> 70d3dbb169586f4863538c989175c465b01fbcd0
