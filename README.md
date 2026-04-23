@@ -20,17 +20,4 @@ I'm a passionate [Your Role/Interest, e.g., software developer, data scientist, 
 -   **Databases:** SQL, NoSQL, [Other Databases]
 -   **Tools:** Git, Docker, VS Code, [Other Tools]
 
-## My Projects
 
-Here are some projects I'm proud of:
-
--   **[Py-Todo](https://github.com/your-username/Py-Todo-main)**: A smart web-based to-do list application built with Flask, featuring due dates, priorities, and browser notifications. (Remember to replace `your-username` with your actual GitHub username in the link!)
--   **Another Project Name**: [Brief description of the project].
--   **Yet Another Project**: [Brief description of the project].
-
----
-
-Feel free to explore my repositories and connect with me!
-=======
-"# mlops-fraud-detection" 
->>>>>>> 70d3dbb169586f4863538c989175c465b01fbcd0
