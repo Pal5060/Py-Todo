@@ -33,9 +33,19 @@ def save_tasks(tasks):
             pass
 
 
-def add_task(name):
+def add_task(name, task_id=None, due_date=None, due_time=None, priority='Low', created_at=None):
+    """
+    Adds a new task to the list.
+    Supports additional fields for consistency with the web interface.
+    """
     tasks = load_tasks()
-    tasks.append({"name": name, "done": False})
+    task = {"name": name, "done": False}
+    if task_id: task['id'] = task_id
+    if due_date: task['due_date'] = due_date
+    if due_time: task['due_time'] = due_time
+    task['priority'] = priority
+    if created_at: task['created_at'] = created_at
+    tasks.append(task)
     save_tasks(tasks)
 
 

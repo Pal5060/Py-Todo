@@ -25,7 +25,13 @@ def main():
         if choice == '1':
             name = input('Task name: ').strip()
             if name:
-                add_task(name)
+                # For consistency with web.py, we could prompt for more details here.
+                # Example:
+                # due_date = input('Due date (YYYY-MM-DD, optional): ').strip() or None
+                # due_time = input('Due time (HH:MM, optional): ').strip() or None
+                # priority = input('Priority (High, Medium, Low, default Low): ').strip() or 'Low'
+                # add_task(name, due_date=due_date, due_time=due_time, priority=priority)
+                add_task(name) # Using the simplified add_task for CLI for now
                 print('Task added.')
             else:
                 print('Empty task not added.')

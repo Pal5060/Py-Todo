@@ -55,12 +55,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // smooth add: when add form submits, let server render new page; keep progressive enhancement minimal
+  // IMPROVEMENT: Convert add form to use AJAX for a smoother user experience.
   const addForm = document.getElementById('addForm');
   if(addForm){
-    addForm.addEventListener('submit', ()=>{
-      // small visual feedback
+    addForm.addEventListener('submit', async (e)=>{
+      e.preventDefault(); // Prevent default form submission
       const btn = addForm.querySelector('button[type=submit]');
-      if(btn){ btn.disabled = true; btn.textContent = 'Adding…'; }
+      const originalBtnText = btn ? btn.textContent : 'Add Task';
+      if(btn){ btn.disabled = true; btn.textContent = 'Adding…'; } // Visual feedback
+
+      const formData = new FormData(addForm);
+      const r = await ajaxPost('/add', formData);
+      if(r.ok){
+        // Assuming the server returns the new task HTML or data to render
+        // For now, we'll just reload the page to show the new task,
+        // but ideally, you'd dynamically add the task to the DOM here.
+        window.location.reload();
+      } else {
+        alert('Failed to add task.'); // Basic error feedback
+      }
+      if(btn){ btn.disabled = false; btn.textContent = originalBtnText; } // Restore button state
     });
   }
 
@@ -73,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showNotification(title, body){
     if('Notification' in window && Notification.permission === 'granted'){
-      try{ new Notification(title, { body }); }catch(e){}
+      try{ new Notification(title, { body }); }catch(e){ console.error("Error showing notification:", e); }
     }
   }
   // Play a short notification tone using WebAudio
@@ -88,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
       g.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.01);
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
       o.connect(g); g.connect(ctx.destination);
-      o.start();
+      o.start(0); // Start immediately
       setTimeout(()=>{ try{ o.stop(); ctx.close(); }catch(e){} }, 700);
     }catch(e){
       // fallback: short beep via audio tag not available
@@ -110,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ok = document.createElement('button'); ok.className='btn'; ok.textContent='OK';
     ok.addEventListener('click', ()=>{ overlay.classList.remove('show'); modal.classList.remove('show'); setTimeout(()=>{ overlay.remove(); modal.remove(); },300); });
     actions.appendChild(ok);
-    modal.appendChild(h); modal.appendChild(b); modal.appendChild(actions);
+    modal.append(h, b, actions); // Use append for multiple elements
     document.body.appendChild(overlay); document.body.appendChild(modal);
     // animate in
     requestAnimationFrame(()=>{ overlay.classList.add('show'); modal.classList.add('show'); });

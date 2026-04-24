@@ -43,7 +43,11 @@ class TodoGUI:
         if not name:
             messagebox.showinfo('Info', 'Please enter a task name')
             return
-        add_task(name)
+        # For consistency with web.py, we could add more input fields here
+        # and pass additional parameters to add_task, e.g.:
+        # add_task(name, due_date=self.due_date_entry.get(), priority=self.priority_var.get())
+        # For now, using the simplified add_task.
+        add_task(name) 
         self.entry.delete(0, tk.END)
         self.refresh()
 
