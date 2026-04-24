@@ -19,8 +19,8 @@ I'm a passionate software engineering coding assistant with a keen interest in c
 -   **Databases:** JSON (file-based persistence)
 -   **Tools:** Git, VS Code
 
-## My Projects
 
+<<<<<<< HEAD
 Here are some projects I'm proud of:
 
 -   **Py-Todo**: A versatile to-do list application with CLI, GUI (Tkinter), and Web (Flask) interfaces, featuring due dates, priorities, and browser notifications for the web version. (Remember to replace `your-username` with your actual GitHub username in the link!)
@@ -28,3 +28,5 @@ Here are some projects I'm proud of:
 ---
 
 Feel free to explore my repositories and connect with me!
+=======
+>>>>>>> 2cf33230af180aa4ae7ce0c4253773127269d075
