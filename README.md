@@ -20,7 +20,5 @@ I'm a passionate software engineering coding assistant with a keen interest in c
 -   **Tools:** Git, VS Code
 
 
-<<<<<<< HEAD
-Here are some projects I'm proud of:
 
 
