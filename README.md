@@ -28,5 +28,4 @@ Here are some projects I'm proud of:
 ---
 
 Feel free to explore my repositories and connect with me!
-=======
->>>>>>> 2cf33230af180aa4ae7ce0c4253773127269d075
+
