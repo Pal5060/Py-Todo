@@ -67,10 +67,98 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(addForm);
       const r = await ajaxPost('/add', formData);
       if(r.ok){
-        // Assuming the server returns the new task HTML or data to render
-        // For now, we'll just reload the page to show the new task,
-        // but ideally, you'd dynamically add the task to the DOM here.
-        window.location.reload();
+        try {
+          const result = await r.json();
+          
+          if (result.ok && result.task) {
+            const task = result.task;
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.dataset.id = task.id;
+            if (task.due_date) {
+              card.dataset.due = `${task.due_date} ${task.due_time || ''}`.trim();
+            }
+            
+            // Build the card's inner HTML. 
+            // Note: You may need to adjust these classes to perfectly match your index.html markup
+            card.innerHTML = `
+              <div class="task-info">
+                <span class="title">${task.name}</span>
+                <div class="meta">Priority: ${task.priority} ${task.due_date ? `| Due: ${task.due_date}` : ''}</div>
+              </div>
+              <div class="task-actions">
+                <button class="done-btn" data-id="${task.id}">Done</button>
+                <button class="del-btn" data-id="${task.id}">Delete</button>
+              </div>
+            `;
+            
+            // Determine sorting data to insert the new card in the correct position
+            const getSortData = (isDone, dueStr, priorityStr) => {
+              let isOverdue = false;
+              if (dueStr && !isDone) {
+                const due = parseDueString(dueStr);
+                if (due) {
+                  const now = new Date();
+                  now.setSeconds(0, 0); // Ignore seconds to match Python backend behavior
+                  isOverdue = due < now;
+                }
+              }
+              const pMap = { 'High': 3, 'Medium': 2, 'Low': 1 };
+              return { done: isDone, overdue: isOverdue, pVal: pMap[priorityStr] || 1 };
+            };
+
+            const newData = getSortData(
+              false, // newly added tasks are never done
+              task.due_date ? `${task.due_date} ${task.due_time || '00:00'}` : null,
+              task.priority
+            );
+
+            const existingCards = document.querySelectorAll('.task-card');
+            const container = existingCards.length > 0 ? existingCards[0].parentNode : document.body;
+            let inserted = false;
+
+            for (const eCard of existingCards) {
+              const eDone = eCard.classList.contains('done');
+              const eDueStr = eCard.dataset.due;
+              let ePriority = 'Low';
+              const eMeta = eCard.querySelector('.meta');
+              
+              if (eMeta) {
+                const match = eMeta.textContent.match(/Priority:\s*(High|Medium|Low)/);
+                if (match) ePriority = match[1];
+              }
+
+              const eData = getSortData(eDone, eDueStr, ePriority);
+
+              // Sort criteria: not done first, overdue high priority
+              let comesBefore = false;
+              if (newData.done !== eData.done) {
+                comesBefore = !newData.done;
+              } else if (newData.overdue !== eData.overdue) {
+                comesBefore = newData.overdue;
+              } else if (newData.pVal !== eData.pVal) {
+                comesBefore = newData.pVal > eData.pVal;
+              }
+
+              if (comesBefore) {
+                container.insertBefore(card, eCard);
+                inserted = true;
+                break;
+              }
+            }
+
+            // If it shouldn't come before anything, append it to the end
+            if (!inserted) {
+              container.appendChild(card);
+            }
+            
+            addForm.reset(); // Clear the input fields for the next task
+          } else {
+            window.location.reload(); // Fallback if data is missing
+          }
+        } catch(e) {
+          window.location.reload(); // Fallback if parsing fails
+        }
       } else {
         alert('Failed to add task.'); // Basic error feedback
       }

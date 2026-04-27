@@ -47,6 +47,7 @@ def add_task(name, task_id=None, due_date=None, due_time=None, priority='Low', c
     if created_at: task['created_at'] = created_at
     tasks.append(task)
     save_tasks(tasks)
+    return task
 
 
 def delete_task(index):

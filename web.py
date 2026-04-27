@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime
 import uuid
-from tasks import load_tasks, save_tasks, mark_task_done_by_id, delete_task_by_id
+from tasks import load_tasks, save_tasks, add_task, mark_task_done_by_id, delete_task_by_id
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -55,18 +55,15 @@ def add():
 
     if not name:
         return redirect(url_for('index'))
-    tasks = load_tasks()
-    task = {
-        'id': make_task_id(),
-        'name': name,
-        'due_date': due_date,
-        'due_time': due_time,
-        'priority': priority,
-        'done': False,
-        'created_at': datetime.now().isoformat()
-    }
-    tasks.append(task) # Use the updated add_task if it were to be used directly here
-    save_tasks(tasks)
+    
+    task = add_task(
+        name=name,
+        task_id=make_task_id(),
+        due_date=due_date,
+        due_time=due_time,
+        priority=priority,
+        created_at=datetime.now().isoformat()
+    )
     # support AJAX
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return jsonify({'ok': True, 'task': task})
