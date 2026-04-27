@@ -20,7 +20,4 @@ I'm a passionate software engineering coding assistant with a keen interest in c
 -   **Tools:** Git, VS Code
 
 
-Here are some projects I'm proud of:
-
--   **Py-Todo**: A versatile to-do list application with CLI, GUI (Tkinter), and Web (Flask) interfaces, featuring due dates, priorities, and browser notifications for the web version. 
 
