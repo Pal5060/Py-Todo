@@ -52,6 +52,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
       }
     }
+
+    const likeBtn = e.target.closest('.like-btn');
+    if(likeBtn){
+      const id = likeBtn.dataset.id;
+      const r = await ajaxPost(`/like/${id}`, null);
+      if(r.ok){
+        const result = await r.json();
+        if(result.ok && result.likes !== undefined){
+          const likeCountSpan = likeBtn.querySelector('.like-count');
+          if(likeCountSpan) likeCountSpan.textContent = result.likes;
+        }
+      }
+    }
+
   });
 
   // smooth add: when add form submits, let server render new page; keep progressive enhancement minimal
@@ -78,15 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (task.due_date) {
               card.dataset.due = `${task.due_date} ${task.due_time || ''}`.trim();
             }
+            // Ensure likes is initialized for new tasks
+            task.likes = task.likes !== undefined ? task.likes : 0;
             
             // Build the card's inner HTML. 
             // Note: You may need to adjust these classes to perfectly match your index.html markup
             card.innerHTML = `
               <div class="task-info">
                 <span class="title">${task.name}</span>
-                <div class="meta">Priority: ${task.priority} ${task.due_date ? `| Due: ${task.due_date}` : ''}</div>
+                <div class="meta">
+                  <span class="priority priority-${task.priority.toLowerCase()}">${task.priority}</span> ${task.due_date ? `| Due: ${task.due_date}` : ''}
+                </div>
               </div>
               <div class="task-actions">
+                <button class="like-btn" data-id="${task.id}">❤️ <span class="like-count">${task.likes}</span></button>
                 <button class="done-btn" data-id="${task.id}">Done</button>
                 <button class="del-btn" data-id="${task.id}">Delete</button>
               </div>

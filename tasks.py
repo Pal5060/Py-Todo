@@ -42,11 +42,14 @@ def add_task(name, task_id=None, due_date=None, due_time=None, priority='Low', c
     tasks = load_tasks()
     if task_id is None: # Ensure a unique ID is always generated if not explicitly provided
         task_id = uuid.uuid4().hex
+    if created_at is None: # Ensure created_at is always set if not explicitly provided
+        created_at = datetime.now().isoformat()
     task = {"id": task_id, "name": name, "done": False}
     if due_date: task['due_date'] = due_date # Keep original for now, but consider combined datetime object
     if due_time: task['due_time'] = due_time
     task['priority'] = priority
-    if created_at: task['created_at'] = created_at
+    task['likes'] = 0 # Initialize likes for new tasks
+    task['created_at'] = created_at
     tasks.append(task)
     save_tasks(tasks)
     return task
@@ -108,3 +111,16 @@ def delete_task_by_id(task_id):
     if deleted:
         save_tasks(tasks_after_deletion)
     return deleted
+
+def increment_task_likes_by_id(task_id):
+    """Increment the likes count for a task by its ID. Returns the new like count or None if not found."""
+    tasks = load_tasks()
+    new_likes = None
+    for task in tasks:
+        if task.get('id') == task_id:
+            task['likes'] = task.get('likes', 0) + 1 # Ensure 'likes' exists and increment
+            new_likes = task['likes']
+            break
+    if new_likes is not None:
+        save_tasks(tasks)
+    return new_likes

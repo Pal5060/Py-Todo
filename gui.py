@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-from tasks import load_tasks, add_task, delete_task, mark_done
+from tasks import load_tasks, add_task, delete_task_by_id, mark_task_done_by_id
+from datetime import datetime # Import datetime for created_at
 
 
 class TodoGUI:
@@ -30,24 +31,23 @@ class TodoGUI:
         self.listbox = tk.Listbox(self.frame, font=('Arial', 12))
         self.listbox.pack(fill=tk.BOTH, expand=True)
 
+        self.task_ids = [] # To store task IDs corresponding to listbox entries
         self.refresh()
 
     def refresh(self):
         self.listbox.delete(0, tk.END)
+        self.task_ids = [] # Clear IDs before repopulating
         for t in load_tasks():
             mark = '✔ ' if t.get('done') else ''
             self.listbox.insert(tk.END, f"{mark}{t.get('name')}")
+            self.task_ids.append(t.get('id')) # Store the ID
 
     def add_task(self):
         name = self.entry.get().strip()
         if not name:
             messagebox.showinfo('Info', 'Please enter a task name')
             return
-        # For consistency with web.py, we could add more input fields here
-        # and pass additional parameters to add_task, e.g.:
-        # add_task(name, due_date=self.due_date_entry.get(), priority=self.priority_var.get())
-        # For now, using the simplified add_task.
-        add_task(name) 
+        add_task(name, created_at=datetime.now().isoformat()) # Pass created_at for consistency
         self.entry.delete(0, tk.END)
         self.refresh()
 
@@ -56,8 +56,10 @@ class TodoGUI:
         if not sel:
             messagebox.showinfo('Info', 'Select a task to delete')
             return
-        index = sel[0]
-        delete_task(index)
+        index = sel[0] # Get the index from the listbox selection
+        task_id = self.task_ids[index] # Get the corresponding task ID
+        if delete_task_by_id(task_id):
+            messagebox.showinfo('Success', 'Task deleted.')
         self.refresh()
 
     def mark_task(self):
@@ -65,8 +67,10 @@ class TodoGUI:
         if not sel:
             messagebox.showinfo('Info', 'Select a task to mark')
             return
-        index = sel[0]
-        mark_done(index)
+        index = sel[0] # Get the index from the listbox selection
+        task_id = self.task_ids[index] # Get the corresponding task ID
+        if mark_task_done_by_id(task_id):
+            messagebox.showinfo('Success', 'Task marked as done.')
         self.refresh()
 
 

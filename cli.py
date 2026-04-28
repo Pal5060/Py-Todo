@@ -1,15 +1,17 @@
-from tasks import load_tasks, add_task, delete_task, mark_done
+from tasks import load_tasks, add_task, delete_task_by_id, mark_task_done_by_id
 
 
-def print_tasks():
+def print_tasks(show_ids=False):
     tasks = load_tasks()
     if not tasks:
         print("No tasks found. Add one!")
-        return
+        return []
     print('\nTasks:')
     for i, t in enumerate(tasks):
         mark = '✔' if t.get('done') else ' '
-        print(f"{i+1}. [{mark}] {t.get('name')}")
+        task_id_display = f" (ID: {t.get('id')})" if show_ids else ""
+        print(f"{i+1}. [{mark}] {t.get('name')}{task_id_display}")
+    return tasks
 
 
 def main():
@@ -34,23 +36,31 @@ def main():
             else:
                 print('Empty task not added.')
         elif choice == '2':
-            print_tasks()
+            print_tasks(show_ids=False) # Don't show IDs by default for simplicity
         elif choice == '3':
-            print_tasks()
+            current_tasks = print_tasks() # Get tasks to map index to ID
             idx = input('Task number to mark done: ').strip()
             if idx.isdigit():
-                if mark_done(int(idx)-1):
-                    print('Task marked done.')
+                task_index = int(idx) - 1
+                if 0 <= task_index < len(current_tasks):
+                    if mark_task_done_by_id(current_tasks[task_index]['id']):
+                        print('Task marked done.')
+                    else:
+                        print('Failed to mark task done.')
                 else:
                     print('Invalid task number.')
             else:
                 print('Please enter a number.')
         elif choice == '4':
-            print_tasks()
+            current_tasks = print_tasks() # Get tasks to map index to ID
             idx = input('Task number to delete: ').strip()
             if idx.isdigit():
-                if delete_task(int(idx)-1):
-                    print('Task deleted.')
+                task_index = int(idx) - 1
+                if 0 <= task_index < len(current_tasks):
+                    if delete_task_by_id(current_tasks[task_index]['id']):
+                        print('Task deleted.')
+                    else:
+                        print('Failed to delete task.')
                 else:
                     print('Invalid task number.')
             else:
