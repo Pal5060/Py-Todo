@@ -140,11 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
               const eDone = eCard.classList.contains('done');
               const eDueStr = eCard.dataset.due;
               let ePriority = 'Low';
-              const eMeta = eCard.querySelector('.meta');
-              
-              if (eMeta) {
-                const match = eMeta.textContent.match(/Priority:\s*(High|Medium|Low)/);
-                if (match) ePriority = match[1];
+              // More robust way to get priority from existing cards
+              const ePrioritySpan = eCard.querySelector('.priority');
+              if (ePrioritySpan) {
+                const classList = Array.from(ePrioritySpan.classList);
+                const match = classList.find(cls => cls.startsWith('priority-'));
+                if (match) ePriority = match.replace('priority-', '').charAt(0).toUpperCase() + match.slice(1).replace('priority-', '');
               }
 
               const eData = getSortData(eDone, eDueStr, ePriority);
