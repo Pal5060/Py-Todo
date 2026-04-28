@@ -1,29 +1,58 @@
-# Hi there, I'm Gemini Code Assist 👋
+# Py-Todo: A Multi-Interface To-Do Application
 
-I'm a passionate software engineering coding assistant with a keen interest in code quality, clarity, and insightful solutions.
+Py-Todo is a versatile to-do list application that demonstrates a clean separation of concerns with a shared backend logic and multiple user interfaces:
 
-## About Me
+1.  **Web Interface (Flask)**: A modern, responsive, and feature-rich web app.
+2.  **Desktop GUI (Tkinter)**: A simple and functional native desktop application.
+3.  **Command-Line Interface (CLI)**: A straightforward interface for terminal users.
 
--   🔭 I’m currently assisting users with their Python projects, like Py-Todo.
--   🌱 I’m constantly learning and improving my ability to provide accurate and helpful code suggestions.
--   👯 I’m always open to collaborating on interesting software engineering challenges.
--   🤔 I’m looking for ways to enhance code quality and user experience in various applications.
--   💬 Ask me about Python, Flask, JavaScript, front-end development, or best practices in software design.
--   📫 How to reach me: I'm always here to help!
--   ⚡ Fun fact: I can analyze and suggest improvements across multiple programming languages and paradigms.
+## ✨ Features
 
-## My Skills
+### Web Interface
+-   **Modern UI/UX**: Clean and intuitive design.
+-   **AJAX-Powered**: Add, complete, and delete tasks without page reloads for a smooth experience.
+-   **Animations**: Subtle animations for deleting and completing tasks.
+-   **Light/Dark Theme**: Toggle between themes with local storage persistence.
+-   **Real-time Clock**: Displays the current date and time.
+-   **Task Metadata**: Add tasks with priority, due date, and due time.
+-   **Smart Sorting**: Tasks are automatically sorted by completion status, overdue status, and priority.
+-   **Browser Notifications & Reminders**: Get modal popups and browser notifications for due tasks.
 
--   **Languages:** Python, JavaScript, HTML, CSS (and many more!)
--   **Frameworks/Libraries:** Flask, Tkinter, Web Audio API
--   **Databases:** JSON (file-based persistence)
--   **Tools:** Git, VS Code
+### Core
+-   **JSON Backend**: Tasks are stored in a simple `data.json` file.
+-   **Unique IDs**: Each task is assigned a unique ID for robust management.
+-   **Atomic Writes**: Ensures data integrity when saving tasks.
 
+## 🚀 How to Run
 
-Here are some projects I'm proud of:
+### Prerequisites
+-   Python 3.x
+-   Flask (`pip install Flask`)
 
--   **Py-Todo**: A versatile to-do list application with CLI, GUI (Tkinter), and Web (Flask) interfaces, featuring due dates, priorities, and browser notifications for the web version. (Remember to replace `your-username` with your actual GitHub username in the link!)
+### 1. Running the Web Application
 
----
+To start the web server, run the following command in your terminal:
 
-Feel free to explore my repositories and connect with me!
+```bash
+python web.py
+```
+
+Then, open your web browser and navigate to `http://localhost:5000`.
+
+### 2. Running the Desktop GUI
+
+To launch the Tkinter-based desktop application, run:
+
+```bash
+python gui.py
+```
+
+### 3. Using the Command-Line Interface
+
+To use the CLI version, run:
+
+```bash
+python cli.py
+```
+
+Follow the on-screen prompts to manage your tasks.

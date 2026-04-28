@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+import uuid # Import uuid for generating unique IDs
 
 DATA_FILE = os.path.join(os.path.dirname(__file__), 'data.json')
 
@@ -12,7 +13,7 @@ def load_tasks():
     try:
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
-    except (json.JSONDecodeError, IOError):
+    except (json.JSONDecodeError, FileNotFoundError, IOError) as e: # Catch FileNotFoundError explicitly
         return []
 
 
@@ -23,7 +24,7 @@ def save_tasks(tasks):
     try:
         with os.fdopen(fd, 'w', encoding='utf-8') as f:
             json.dump(tasks, f, indent=2, ensure_ascii=False)
-        os.replace(tmp_path, DATA_FILE)
+        os.replace(tmp_path, DATA_FILE) # Atomic replacement
     except Exception as e:
         print(f"Error saving tasks: {e}")
         # If anything fails, try to clean up the temp file
@@ -35,13 +36,14 @@ def save_tasks(tasks):
 
 def add_task(name, task_id=None, due_date=None, due_time=None, priority='Low', created_at=None):
     """
-    Adds a new task to the list.
+    Adds a new task to the list. Generates a unique ID if not provided.
     Supports additional fields for consistency with the web interface.
     """
     tasks = load_tasks()
-    task = {"name": name, "done": False}
-    if task_id: task['id'] = task_id
-    if due_date: task['due_date'] = due_date
+    if task_id is None: # Ensure a unique ID is always generated if not explicitly provided
+        task_id = uuid.uuid4().hex
+    task = {"id": task_id, "name": name, "done": False}
+    if due_date: task['due_date'] = due_date # Keep original for now, but consider combined datetime object
     if due_time: task['due_time'] = due_time
     task['priority'] = priority
     if created_at: task['created_at'] = created_at
@@ -52,21 +54,32 @@ def add_task(name, task_id=None, due_date=None, due_time=None, priority='Low', c
 
 def delete_task(index):
     tasks = load_tasks()
-    if 0 <= index < len(tasks):
+    # This function is now deprecated in favor of delete_task_by_id due to index unreliability.
+    # For Tkinter/CLI, if index is still used, it means an internal list index, not a persistent ID.
+    # It's better to update Tkinter/CLI to use task IDs.
+    # For now, keeping it as is, but it should be replaced.
+    print("Warning: delete_task(index) is deprecated. Use delete_task_by_id instead.")
+    if 0 <= index < len(tasks) and 'id' in tasks[index]: # Check if task has an ID
+        return delete_task_by_id(tasks[index]['id'])
+    elif 0 <= index < len(tasks): # Fallback for tasks without IDs (older entries)
         tasks.pop(index)
         save_tasks(tasks)
         return True
     return False
 
 
+
 def mark_done(index):
     tasks = load_tasks()
-    if 0 <= index < len(tasks):
+    # This function is now deprecated in favor of mark_task_done_by_id.
+    print("Warning: mark_done(index) is deprecated. Use mark_task_done_by_id instead.")
+    if 0 <= index < len(tasks) and 'id' in tasks[index]: # Check if task has an ID
+        return mark_task_done_by_id(tasks[index]['id'])
+    elif 0 <= index < len(tasks): # Fallback for tasks without IDs
         tasks[index]["done"] = True
         save_tasks(tasks)
         return True
     return False
-
 
 def clear_all():
     save_tasks([])

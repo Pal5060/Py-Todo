@@ -1,9 +1,11 @@
-# Python virtual environment
-.venv
-venv/
-
-# Python cache files
+# Python specific
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Application data
-data.json
+# VSCode specific
+.vscode/
+
+# User data file - Uncomment the line below if you don't want to commit your personal tasks
+# data.json
