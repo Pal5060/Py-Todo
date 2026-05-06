@@ -21,7 +21,8 @@ def main():
         print('2) View Tasks')
         print('3) Mark Task as Done')
         print('4) Delete Task')
-     
+        print('5) Exit')
+        choice = input('Choose an option: ').strip()
 
         if choice == '1':
             name = input('Task name: ').strip()
